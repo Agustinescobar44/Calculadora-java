@@ -11,10 +11,13 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.UIManager;
+
+import java.awt.Color;
 
 public class Calculadora {
 	private JLabel valorA;
@@ -51,6 +54,7 @@ public class Calculadora {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 401,501);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null); 
@@ -69,7 +73,7 @@ public class Calculadora {
 		gbl_panelBotones.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
 		panelBotones.setLayout(gbl_panelBotones);
 		
-		JButton botonBorrar = new JButton("borrar");
+		JButton botonBorrar = new JButton("Borrar");
 		GridBagConstraints gbc_botonBorrar = new GridBagConstraints();
 		gbc_botonBorrar.gridwidth = 2;
 		gbc_botonBorrar.fill = GridBagConstraints.BOTH;
@@ -78,7 +82,7 @@ public class Calculadora {
 		gbc_botonBorrar.gridy = 0;
 		panelBotones.add(botonBorrar, gbc_botonBorrar);
 		
-		JButton botonBorrarTodo = new JButton("reiniciar");
+		JButton botonBorrarTodo = new JButton("C");
 		GridBagConstraints gbc_botonBorrarTodo = new GridBagConstraints();
 		gbc_botonBorrarTodo.fill = GridBagConstraints.BOTH;
 		gbc_botonBorrarTodo.insets = new Insets(0, 0, 5, 5);
@@ -224,6 +228,7 @@ public class Calculadora {
 		panelBotones.add(botonDividir, gbc_botonDividir);
 		
 		agregarActionListener(panelBotones, calculadora);
+		estiloBotones(panelBotones);
 		
 		JPanel panelRender = new JPanel();
 		panelRender.setBounds(10, 11, 365, 105);
@@ -289,20 +294,35 @@ public class Calculadora {
 		panelRender.add(valorB, gbc_valorB);
 	}
 
-	private void agregarActionListener(JPanel panel, LogicaCalculadora calculadora) {
-		for (Component  componente: panel.getComponents()) {
-			if(componente instanceof JButton) {
-				((JButton) componente).addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JButton boton = (JButton) componente;
-						calculadora.agregarValor(boton.getText());
-						render(calculadora);
-					}
-				});
-			}
+	private void estiloBotones(JPanel panel) {
+		ArrayList<JButton> botones= getBotones(panel);
+		for(JButton boton: botones) {
+			boton.setFont(new Font("Tahoma", Font.BOLD, 20));
 		}
 	}
+
+	private void agregarActionListener(JPanel panel, LogicaCalculadora calculadora) {
+		ArrayList<JButton> botones= getBotones(panel);
+		for(JButton boton: botones) {
+			boton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					calculadora.agregarValor(boton.getText());
+					render(calculadora);
+				}
+			});
+		}
+		
+	}
+	
+	private ArrayList<JButton> getBotones(JPanel panel){
+		ArrayList<JButton> ret = new ArrayList<JButton>();
+		for (Component  componente: panel.getComponents()) {
+			if(componente instanceof JButton) ret.add((JButton) componente);
+		}
+		return ret;
+	}
+	
 	private void render(LogicaCalculadora calculadora) {
 		valorA.setText(calculadora.get_valorA());
 		operadorCuenta.setText(calculadora.get_operador());
