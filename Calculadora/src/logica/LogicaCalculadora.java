@@ -44,12 +44,17 @@ public class LogicaCalculadora {
 		
 		switch (valor) {
 		case "=":
-			if(sePuedeResolver())_resultado = resolver().toString();
+			try{
+				if(sePuedeResolver())_resultado = resolver().toString();
+			}catch (Exception e) {
+				_resultado ="error";
+			}
+			
 			break;
-		case "borrar":
+		case "Borrar":
 			borrar();
 			break;
-		case "reiniciar":
+		case "C":
 			reiniciar();
 			break;
 
@@ -71,7 +76,7 @@ public class LogicaCalculadora {
 	}
 
 	private void asignarNumero(String valor) {
-		if(_resultado!="") reiniciar();
+		if(_resultado!="" || _resultado=="error") reiniciar();
 		if(_operador=="")this._valorA +=valor;
 		else {
 			this._valorB+=valor;
@@ -79,16 +84,21 @@ public class LogicaCalculadora {
 	}
 
 	private void asignarOperador(String valor) {
-		if(valor=="-"&&_valorA=="") _valorA+="-";
-		else if (valor=="-"&&_valorB==""&&_operador!="") _valorB+="-";
-		else{
-			if(_resultado!="") {
-				String temp = _resultado;
-				reiniciar();
-				_valorA = temp;
+		if(_resultado!="error") {
+			//valor a negativo
+			if(valor=="-"&&_valorA=="") _valorA+="-";
+			//valor b negativo
+			else if (valor=="-"&&_valorB==""&&_operador!="") _valorB+="-";
+			//se asigna operador
+			else{
+				if(_resultado!="") {
+					String temp = _resultado;
+					reiniciar();
+					_valorA = temp;
+				}
+				
+				this._operador = valor;
 			}
-			
-			this._operador = valor;
 		}
 	}
 	
